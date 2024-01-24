@@ -1,0 +1,8 @@
+\begin{tabular}{llrl}
+\hline
+ TFIDF   &   BoW & HV   & TFIDF-B \\
+\hline
+ 0.763    & 0.605   & 0.727 & 0.807 \\
+ 2, 3     & ---     & 2     & all   \\
+\hline
+\end{tabular}

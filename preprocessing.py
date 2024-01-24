@@ -1,4 +1,5 @@
 from cProfile import label
+from turtle import write_docstringdict
 import pandas as pd
 import string
 import re
@@ -51,11 +52,11 @@ def remove_stopwords(text):
 
 def stem_words(data):
     ps = PorterStemmer()
-    return [ps.stem(word) for word in data]
+    return " ".join([ps.stem(word) for word in data])
 
 def lemmit(data):
     wordnet_lem = WordNetLemmatizer()
-    return [wordnet_lem.lemmatize(word) for word in data]
+    return " ".join([wordnet_lem.lemmatize(word) for word in data])
 
 def denoise_text(data):
     text = remove_html_tags(data)
@@ -90,12 +91,18 @@ def main():
     df["review"] = df["review"].apply(denoise_text)
 
     # Tokenize
-    df['tokens'] = df['review'].apply(lambda x: word_tokenize(x))
-    # 
+    df['tokens'] = df['review'].apply(lambda x: word_tokenize(str(x)))
+
+    # Lematize
     df['tokens'] = df['tokens'].apply(lambda x: lemmit(x))
     
     df.sentiment.replace("positive" , 1 , inplace = True)
     df.sentiment.replace("negative" , 0 , inplace = True)
+
+    print(df.head())
+    X = df["tokens"]
+    for i in X[0]:
+        print(i)
 
     # Save to file
     df.to_csv("data/preprocessed_imdb.csv")
