@@ -91,7 +91,7 @@ def main():
     df["review"] = df["review"].apply(denoise_text)
 
     # Tokenize
-    df['tokens'] = df['review'].apply(lambda x: word_tokenize(str(x)))
+    df['tokens'] = df['review'].str.lower().apply(word_tokenize)
 
     # Lematize
     df['lematized_tokens'] = df['tokens'].apply(lambda x: lemmit(x))

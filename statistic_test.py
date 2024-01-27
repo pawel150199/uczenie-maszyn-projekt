@@ -22,7 +22,7 @@ def main(table_name: str):
     mean_scores = np.load("results/main-mean.npy")
     std =np.load("results/main-std.npy")
     metrics = ["accuracy"]
-    vecs = ["TFIDF", "BoW", "HV", "TFIDF-B"]
+    vecs = ["TFIDF", "BoW", "HV", "TFIDF-B", "D2V", "W2V"]
     n_clfs = len(vecs)
     t = []
 

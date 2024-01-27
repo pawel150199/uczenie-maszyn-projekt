@@ -10,7 +10,7 @@ from tensorflow.keras.preprocessing.sequence import pad_sequences
 import multiprocessing
 
 class TextToImage(object):
-    def __init__(self, vector_size=36, random_state=1410):
+    def __init__(self, vector_size=100, random_state=1410):
         self.cores = multiprocessing.cpu_count()
         self.vector_size = vector_size
         self.random_state = random_state
@@ -31,20 +31,14 @@ class TextToImage(object):
         model.build_vocab(X)
         model.train(X, total_examples=model.corpus_count, epochs=40)
         mean_vectors = self._map_words_to_vectors(X, model)
-        return mean_vectors
+        return np.array(mean_vectors)
 
-    def transform(self, X, y):
+    def transform(self, X):
         vectors = self._word2vec(X)
         for image_id, image in enumerate(vectors):
-            if y[image_id] == 0:
-                plt.imshow(image, cmap='Greys')
-                plt.savefig(f"data/negative/{image_id}.png")
-            elif y[image_id] == 1:
-                plt.imshow(image, cmap='Greys')
-                plt.savefig(f"data/positive/{image_id}.png")
-            else:
-                raise ValueError("y array has an incorrect value!")
-
+            plt.imshow(image, cmap='Greys')     
+            plt.axis("off")
+            plt.savefig(f"data/images/{image_id}.png", bbox_inches='tight', pad_inches=0, transparent=True)
                 
 if __name__ == "__main__":
     df = pd.read_csv("data/preprocessed_imdb.csv")
@@ -52,5 +46,5 @@ if __name__ == "__main__":
     y = np.array(df["sentiment"])[:100]
 
     tti = TextToImage()
-    vec = tti.transform(X, y)
+    vec = tti.transform(X)
     
