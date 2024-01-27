@@ -87,22 +87,22 @@ def main():
     count=df['sentiment'].value_counts()
     print('Total Counts of both sets'.format(),count)
 
-    # Denoise text
+    # Denoise text  
     df["review"] = df["review"].apply(denoise_text)
 
     # Tokenize
     df['tokens'] = df['review'].apply(lambda x: word_tokenize(str(x)))
 
     # Lematize
-    df['tokens'] = df['tokens'].apply(lambda x: lemmit(x))
+    df['lematized_tokens'] = df['tokens'].apply(lambda x: lemmit(x))
+
+    # Stemmed
+    df['stemmed_tokens'] = df['tokens'].apply(lambda x: stem_words(x))
     
     df.sentiment.replace("positive" , 1 , inplace = True)
     df.sentiment.replace("negative" , 0 , inplace = True)
 
     print(df.head())
-    X = df["tokens"]
-    for i in X[0]:
-        print(i)
 
     # Save to file
     df.to_csv("data/preprocessed_imdb.csv")
