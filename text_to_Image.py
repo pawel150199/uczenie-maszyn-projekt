@@ -1,24 +1,10 @@
-import re
+
 import numpy as np
 import pandas as pd
 from gensim.models import Word2Vec
-from nltk.corpus import gutenberg
-from multiprocessing import Pool
-from scipy import spatial
-from sklearn.base import ClassifierMixin, BaseEstimator
 import matplotlib.pyplot as plt 
-import ast
-from tabnanny import verbose
 import pandas as pd 
 import numpy as np
-import warnings
-from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.feature_extraction.text import TfidfVectorizer, HashingVectorizer, CountVectorizer
-from sklearn.model_selection import RepeatedStratifiedKFold
-from model.doc2vec import Doc2Vec
-from sklearn.svm import SVC
-from sklearn.neural_network import MLPClassifier
 from gensim.models import Word2Vec
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import multiprocessing
@@ -50,10 +36,16 @@ class TextToImage(object):
     def transform(self, X, y):
         vectors = self._word2vec(X)
         for image_id, image in enumerate(vectors):
-            plt.imshow(image, cmap='Greys')
-            plt.savefig(f"data/images/{image_id}.png")
+            if y[image_id] == 0:
+                plt.imshow(image, cmap='Greys')
+                plt.savefig(f"data/images_negative/{image_id}.png")
+            elif y[image_id] == 1:
+                plt.imshow(image, cmap='Greys')
+                plt.savefig(f"data/images_positive/{image_id}.png")
+            else:
+                raise ValueError("y array has an incorrect value!")
 
-
+                
 if __name__ == "__main__":
     df = pd.read_csv("data/preprocessed_imdb.csv")
     X = np.array(df["lematized_tokens"])[:1000]
