@@ -38,18 +38,18 @@ class TextToImage(object):
         for image_id, image in enumerate(vectors):
             if y[image_id] == 0:
                 plt.imshow(image, cmap='Greys')
-                plt.savefig(f"data/images_negative/{image_id}.png")
+                plt.savefig(f"data/negative/{image_id}.png")
             elif y[image_id] == 1:
                 plt.imshow(image, cmap='Greys')
-                plt.savefig(f"data/images_positive/{image_id}.png")
+                plt.savefig(f"data/positive/{image_id}.png")
             else:
                 raise ValueError("y array has an incorrect value!")
 
                 
 if __name__ == "__main__":
     df = pd.read_csv("data/preprocessed_imdb.csv")
-    X = np.array(df["lematized_tokens"])[:1000]
-    y = np.array(df["sentiment"])[:1000]
+    X = np.array(df["lematized_tokens"])[:100]
+    y = np.array(df["sentiment"])[:100]
 
     tti = TextToImage()
     vec = tti.transform(X, y)
