@@ -1,7 +1,7 @@
 import pandas as pd
 import numpy as np
 import ast
-from gensim.models import Word2Vec
+from model.word2vec import Word2Vec
 import multiprocessing
 from tensorflow.keras.preprocessing.text import Tokenizer
 import matplotlib.pyplot as plt
@@ -13,22 +13,6 @@ CORES = multiprocessing.cpu_count()
 VECTOR_SIZE = 32
 ANNOTATIONS = False
 
-def map_words_to_vectors(words, model, max_length=600):
-    words = [x.split() for x in words]
-    word_vectors = []
-
-    for i in words:
-        for j in i:
-            print(j)
-        word_vectors.append([model.wv[x] for x in i])
-
-    padded_vectors = pad_sequences(word_vectors, maxlen=max_length, padding='post', truncating='post', dtype='float32')
-
-    # Calculate mean along the correct axis
-    mean_vectors = np.mean(padded_vectors, axis=1)
-    return mean_vectors
-
-
 
 path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(path)
@@ -38,11 +22,9 @@ X = np.array(df["lematized_tokens"])[:100]
 y = np.array(df["sentiment"])[:100]
 
 
-model = Word2Vec(vector_size=VECTOR_SIZE, window=5, min_count=1, workers=CORES-1)
-model.build_vocab([x.split() for x in X], progress_per=10000)
-model.train([x.split() for x in X], total_examples=model.corpus_count, epochs=100)
+model = Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1)
+X = model.fit(X)
 
-X = model.wv.vectors
 pca = PCA(n_components=2)
 result = pca.fit_transform(X)
 

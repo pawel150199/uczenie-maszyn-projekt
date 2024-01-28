@@ -78,9 +78,9 @@ def main():
     std = np.std(scores, axis=1)
     
     print("\nSave results...\n")
-    np.save(f"results/main-scores", scores)
-    np.save(f"results/main-mean", mean)
-    np.save(f"results/main-std", std)
+    #np.save(f"results/main-scores", scores)
+    #np.save(f"results/main-mean", mean)
+    #np.save(f"results/main-std", std)
     print("\nResults saved\n")
 
     print(scores)
