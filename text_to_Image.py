@@ -28,15 +28,16 @@ class TextToImage(object):
     def transform(self, X):
         vectors = self._word2vec(X)
         for image_id, image in enumerate(vectors):
-            plt.imshow(image, cmap='Greys')     
+            grayscale_image = image.squeeze()
+            plt.imshow(grayscale_image, cmap='gray')     
             plt.axis("off")
             plt.savefig(f"data/images/{image_id}.png", bbox_inches='tight', pad_inches=0, transparent=True)
                 
 if __name__ == "__main__":
     df = pd.read_csv("data/preprocessed_imdb.csv")
-    X = np.array(df["lematized_tokens"])[:100]
-    y = np.array(df["sentiment"])[:100]
+    X = np.array(df["lematized_tokens"])[:200]
+    y = np.array(df["sentiment"])[:200]
 
-    tti = TextToImage(max_length=100)
+    tti = TextToImage(vector_size=50, min_count=1)
     vec = tti.transform(X)
     

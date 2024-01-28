@@ -1,10 +1,12 @@
 import os
 import numpy as np
 from PIL import Image
+import cv2
 import numpy as np
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
+from cnn import get_model
 
 def imageLoader(path: str) -> np.array:
     images = []
@@ -12,15 +14,16 @@ def imageLoader(path: str) -> np.array:
     df = pd.read_csv("data/preprocessed_imdb.csv")
     labels = df["sentiment"][:length]
     for i in range(length):
-        image = np.array(Image.open(f"{path}/{i}.png"))
         images.append(np.array(Image.open(f"{path}/{i}.png")))
+    print(np.array(images).shape)
     return np.array(images), np.array(labels)
         
 
 
 if __name__ == "__main__":
     path = "data/images"
-    images, labels = imageLoader(path)  
+    images, labels = imageLoader(path)
+    model = get_model()
     print(images.shape)  
     fig = plt.figure()
     fig.suptitle("A sample from the original dataset", fontsize=18)

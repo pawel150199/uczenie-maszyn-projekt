@@ -34,11 +34,11 @@ def main():
     }
 
     vecs = {
-        "TFIDF" : TfidfVectorizer(),
-        "BoW" : CountVectorizer(),
-        "HV" : HashingVectorizer(),
-        "BTFIDF" : TfidfVectorizer(binary=True),
-        "D2V" : Doc2Vec(vector_size=VECTOR_SIZE, min_count=1),
+        #"TFIDF" : TfidfVectorizer(),
+        #"BoW" : CountVectorizer(),
+        #"HV" : HashingVectorizer(),
+        #"BTFIDF" : TfidfVectorizer(binary=True),
+        #"D2V" : Doc2Vec(vector_size=VECTOR_SIZE, min_count=1),
         "W2V" : Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1),
     }
 
@@ -57,8 +57,8 @@ def main():
     print("\nExperiment evaluation\n")
 
     for vec_id, vec_name in enumerate(vecs):
-        X = np.array(df["lematized_tokens"])
-        y = np.array(df["sentiment"])
+        X = np.array(df["lematized_tokens"])[:1100]
+        y = np.array(df["sentiment"])[:1100]
     
         print(vec_name)
         vectorizer = vecs[vec_name]

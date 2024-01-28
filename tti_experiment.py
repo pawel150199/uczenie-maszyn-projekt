@@ -8,45 +8,53 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import accuracy_score
 from sklearn.model_selection import train_test_split
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.decomposition import PCA
 from keras.models import Sequential
 from keras.layers import Dense, LSTM
 from keras.optimizers import Adam
 from keras.utils import to_categorical
 from keras import layers
 
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import Dense, Dropout, Activation, Flatten, BatchNormalization
+from tensorflow.keras.layers import Conv2D, MaxPooling2D
+from tensorflow.keras.callbacks import TensorBoard
+
+
 from image_dataloader import imageLoader
+from model.word2vec import Word2Vec
 from text_to_Image import TextToImage
+from cnn import get_model
+from neural_network import create_cnn
 
 imdb_path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(imdb_path)
 
-X = np.array(df["lematized_tokens"])[:100]
-y = np.array(df["sentiment"])[:100]
+X = np.array(df["lematized_tokens"])[:5000]
+y = np.array(df["sentiment"])[:5000]
 
-tti = TextToImage(max_length=100, vector_size=100)
+tti = TextToImage(vector_size=100, min_count=1)
 X = tti._word2vec(X)
 
-height = X.shape[1]
-width = X.shape[2]
+# From images
+#X, y = imageLoader("data/images")
+#y = np.array(df["sentiment"])[:200]
+#X = X.mean(axis=-1)
+
+#dim = X.shape[2]*X.shape[1]
+#X = X.reshape(200, dim)
+
+print(X.shape)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.3)
+#pca = PCA()
+#pca.fit(X_train, y_train)
+#X_train = pca.transform(X_train)
+#X_test = pca.transform(X_test)
 
-model = Sequential([
-    layers.Conv2D(filters=32, kernel_size=(5,5), padding="same", activation="sigmoid", input_shape=(height,width,1)),
-    layers.Conv2D(filters=32, kernel_size=(3,3), padding="same", activation="sigmoid"),
-    layers.MaxPooling2D(pool_size=(2,2)),
-    layers.Flatten(),
-    layers.Dropout(0.5),
-    layers.Dense(64, activation="sigmoid"),
-    layers.Dropout(0.5),
-    layers.Dense(2)])
+dim = X_test.shape[1]
 
-model.compile(
-    optimizer='adam',
-    loss="categorical_crossentropy",
-    metrics=["accuracy"]
-)
-
+model = get_model(height=X_train.shape[1], width=X_train.shape[2], channels=1)
 history = model.fit(X_train, to_categorical(y_train), epochs=100, validation_data=(X_test, to_categorical(y_test)))
 
 # Plot sove data

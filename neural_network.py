@@ -9,6 +9,6 @@ def create_cnn(input_dim: int):
     model = Sequential()
     model.add(Dense(10, input_dim=input_dim, activation="relu"))
     model.add(Dense(8, activation="relu"))
-    model.add(Dense(1, activation="sigmoid"))
+    model.add(Dense(2, activation="sigmoid"))
     model.compile(loss="binary_crossentropy", optimizer="adam", metrics=["accuracy"])
     return model
