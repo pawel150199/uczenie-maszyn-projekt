@@ -1,0 +1,1 @@
+Repozytorium stworzone w ramach przedmiotu uczenie maszyn 

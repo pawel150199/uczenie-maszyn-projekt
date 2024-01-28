@@ -57,8 +57,8 @@ def main():
     print("\nExperiment evaluation\n")
 
     for vec_id, vec_name in enumerate(vecs):
-        X = np.array(df["lematized_tokens"])[:3000]
-        y = np.array(df["sentiment"])[:3000]
+        X = np.array(df["lematized_tokens"])
+        y = np.array(df["sentiment"])
     
         print(vec_name)
         vectorizer = vecs[vec_name]
