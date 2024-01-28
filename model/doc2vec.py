@@ -14,7 +14,6 @@ class Doc2Vec(object):
         X_tagged = [TaggedDocument(words=word_tokenize(doc.lower()),
                               tags=[str(i)]) for i,
                doc in enumerate(X)]
-
         # Train the Doc2vec model
         model = d2v(vector_size=self.vector_size,
                         min_count=self.min_count, epochs=self.epochs, window=self.window)

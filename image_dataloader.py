@@ -20,7 +20,8 @@ def imageLoader(path: str) -> np.array:
 
 if __name__ == "__main__":
     path = "data/images"
-    images, labels = imageLoader(path)    
+    images, labels = imageLoader(path)  
+    print(images.shape)  
     fig = plt.figure()
     fig.suptitle("A sample from the original dataset", fontsize=18)
     for i in range(16):

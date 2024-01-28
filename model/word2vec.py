@@ -1,4 +1,5 @@
 from curses import window
+from os import truncate
 import numpy as np
 from gensim.models import Word2Vec as w2v
 from model.mean_embeding_vectorizer import MeanEmbeddingVectorizer
@@ -31,7 +32,6 @@ class Word2Vec(object):
         model = w2v(vector_size=self.vector_size, window=self.window, min_count=self.min_count, workers=self.workers)
         model.build_vocab(X)
         model.train(X, total_examples=model.corpus_count, epochs=self.epochs)
-        dim = model.vector_size
         word2vec = {word: model.wv[word] for word in model.wv.index_to_key}
 
         vectors = []
@@ -39,7 +39,8 @@ class Word2Vec(object):
             word_vectors = [word2vec[w] for w in words]
             vector = np.array(word_vectors)
             vectors.append(vector)
-        vectors = pad_sequences((vectors), padding='post', dtype='float32', maxlen=max_length)
+
+        vectors = pad_sequences(vectors, padding='post', truncating='post', dtype='float32', maxlen=max_length)
 
         #vectors = pad_sequences(np.array([
         #    np.array([word2vec[w] for w in words]

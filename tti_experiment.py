@@ -15,29 +15,34 @@ from keras.utils import to_categorical
 from keras import layers
 
 from image_dataloader import imageLoader
-from text_to_image import TextToImage
+from text_to_Image import TextToImage
 
 imdb_path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(imdb_path)
 
-X = np.array(df["lematized_tokens"])
-y = np.array(df["sentiment"])
+X = np.array(df["lematized_tokens"])[:100]
+y = np.array(df["sentiment"])[:100]
 
-tti = TextToImage(max_length=300, vector_size=300)
+tti = TextToImage(max_length=100, vector_size=100)
 X = tti._word2vec(X)
+
+height = X.shape[1]
+width = X.shape[2]
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.3)
 
 model = Sequential([
-    layers.Conv2D(filters=32, kernel_size=(5,5), padding="same", activation="sigmoid", input_shape=(100,100,1)),
+    layers.Conv2D(filters=32, kernel_size=(5,5), padding="same", activation="sigmoid", input_shape=(height,width,1)),
     layers.Conv2D(filters=32, kernel_size=(3,3), padding="same", activation="sigmoid"),
     layers.MaxPooling2D(pool_size=(2,2)),
     layers.Flatten(),
+    layers.Dropout(0.5),
     layers.Dense(64, activation="sigmoid"),
+    layers.Dropout(0.5),
     layers.Dense(2)])
 
 model.compile(
-    optimizer="adam",
+    optimizer='adam',
     loss="categorical_crossentropy",
     metrics=["accuracy"]
 )
