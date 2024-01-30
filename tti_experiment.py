@@ -24,20 +24,23 @@ from tensorflow.keras.callbacks import TensorBoard
 from image_dataloader import imageLoader
 from model.word2vec import Word2Vec
 from text_to_image import TextToImage
+import cv2
 from model.cnn import get_model
 from model.neural_network import create_cnn
 
 imdb_path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(imdb_path)
 
-X = np.array(df["lematized_tokens"])[:2000]
-y = np.array(df["sentiment"])[:2000]
+X = np.array(df["lematized_tokens"])[:200]
+y = np.array(df["sentiment"])[:200]
 
-tti = TextToImage(vector_size=100, min_count=1, max_length=400)
+tti = TextToImage(vector_size=100, min_count=1, max_length=500)
 X = tti._word2vec(X)
 
+new_size = (50, 50)
 
 print(X.shape)
+X = np.array([cv2.resize(x, new_size) for x in X])
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.3)
 
