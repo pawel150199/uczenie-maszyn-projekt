@@ -23,7 +23,7 @@ y = np.array(df["sentiment"])[:100]
 
 
 model = Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1)
-X, model = model.fit_transform(X)
+X, model = model.fit_transform_and_return_model(X)
 
 pca = PCA(n_components=2)
 result = pca.fit_transform(X)

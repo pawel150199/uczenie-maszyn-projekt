@@ -22,6 +22,18 @@ class Word2Vec(object):
 
         mev = MeanEmbeddingVectorizer(model)
         X_t = mev.transform(X)
+
+        return X_t
+    
+    def fit_transform_and_return_model(self, X):
+        X = [x.split() for x in X]
+
+        model = w2v(vector_size=self.vector_size, window=self.window, min_count=self.min_count, workers=self.workers)
+        model.build_vocab(X)
+        model.train(X, total_examples=model.corpus_count, epochs=self.epochs)
+
+        mev = MeanEmbeddingVectorizer(model)
+        X_t = mev.transform(X)
         
         return X_t, model
     
