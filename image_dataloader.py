@@ -6,7 +6,7 @@ import numpy as np
 import pandas as pd
 import random
 import matplotlib.pyplot as plt
-from cnn import get_model
+from model.cnn import get_model
 
 def imageLoader(path: str) -> np.array:
     images = []

@@ -35,6 +35,7 @@ class Word2Vec(object):
         word2vec = {word: model.wv[word] for word in model.wv.index_to_key}
 
         vectors = []
+
         for words in X:
             word_vectors = [word2vec[w] for w in words]
             vector = np.array(word_vectors)

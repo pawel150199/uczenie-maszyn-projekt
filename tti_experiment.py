@@ -24,29 +24,24 @@ from tensorflow.keras.callbacks import TensorBoard
 from image_dataloader import imageLoader
 from model.word2vec import Word2Vec
 from text_to_Image import TextToImage
-from cnn import get_model
-from neural_network import create_cnn
+from model.cnn import get_model
+from model.neural_network import create_cnn
 
 imdb_path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(imdb_path)
 
-X = np.array(df["lematized_tokens"])[:5000]
-y = np.array(df["sentiment"])[:5000]
+X = np.array(df["lematized_tokens"])[:2000]
+y = np.array(df["sentiment"])[:2000]
 
-tti = TextToImage(vector_size=100, min_count=1)
+tti = TextToImage(vector_size=100, min_count=1, max_length=400)
 X = tti._word2vec(X)
 
-# From images
-#X, y = imageLoader("data/images")
-#y = np.array(df["sentiment"])[:200]
-#X = X.mean(axis=-1)
-
-#dim = X.shape[2]*X.shape[1]
-#X = X.reshape(200, dim)
 
 print(X.shape)
 
 X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.3)
+
+# PCA if needed
 #pca = PCA()
 #pca.fit(X_train, y_train)
 #X_train = pca.transform(X_train)
@@ -54,10 +49,10 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.3)
 
 dim = X_test.shape[1]
 
-model = get_model(height=X_train.shape[1], width=X_train.shape[2], channels=1)
-history = model.fit(X_train, to_categorical(y_train), epochs=100, validation_data=(X_test, to_categorical(y_test)))
+model = get_model(height=X_train.shape[1], width=X_train.shape[2])
+history = model.fit(X_train, to_categorical(y_train), epochs=20, validation_data=(X_test, to_categorical(y_test)))
 
-# Plot sove data
+# Plot some data
 
 import matplotlib.pyplot as plt
 

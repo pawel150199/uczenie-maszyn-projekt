@@ -35,9 +35,9 @@ class TextToImage(object):
                 
 if __name__ == "__main__":
     df = pd.read_csv("data/preprocessed_imdb.csv")
-    X = np.array(df["lematized_tokens"])[:200]
-    y = np.array(df["sentiment"])[:200]
+    X = np.array(df["lematized_tokens"])[:20]
+    y = np.array(df["sentiment"])[:20]
 
-    tti = TextToImage(vector_size=50, min_count=1)
+    tti = TextToImage(vector_size=100, min_count=1)
     vec = tti.transform(X)
     
