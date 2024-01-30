@@ -31,24 +31,29 @@ from model.neural_network import create_cnn
 imdb_path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(imdb_path)
 
-X = np.array(df["lematized_tokens"])[:200]
-y = np.array(df["sentiment"])[:200]
+X = np.array(df["lematized_tokens"])[:25000]
+y = np.array(df["sentiment"])[:25000]
 
-tti = TextToImage(vector_size=100, min_count=1, max_length=500)
+tti = TextToImage(vector_size=50, min_count=1)
 X = tti._word2vec(X)
 
-new_size = (50, 50)
+height = X.shape[1]
+width = X.shape[2]
 
-print(X.shape)
-X = np.array([cv2.resize(x, new_size) for x in X])
-
-X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.3)
+X = X.reshape(X.shape[0], height*width)
 
 # PCA if needed
-#pca = PCA()
-#pca.fit(X_train, y_train)
-#X_train = pca.transform(X_train)
-#X_test = pca.transform(X_test)
+pca = PCA(n_components=1600)
+X = pca.fit_transform(X, y)
+
+X = X.reshape(X.shape[0], 40, 40)
+
+#new_size = (50, 150)
+#
+#print(X.shape)
+#X = np.array([cv2.resize(x, new_size) for x in X])
+
+X_train, X_test, y_train, y_test = train_test_split(X, y, train_size=0.3)
 
 dim = X_test.shape[1]
 
