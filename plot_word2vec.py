@@ -18,8 +18,8 @@ path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(path)
 
 
-X = np.array(df["lematized_tokens"])[:100]
-y = np.array(df["sentiment"])[:100]
+X = np.array(df["lematized_tokens"])
+y = np.array(df["sentiment"])
 
 
 model = Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1)
