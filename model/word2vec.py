@@ -23,7 +23,7 @@ class Word2Vec(object):
         mev = MeanEmbeddingVectorizer(model)
         X_t = mev.transform(X)
         
-        return X_t
+        return X_t, model
     
     def fit(self, X, max_length=None):
         # The same as fit_transform but not meaning values

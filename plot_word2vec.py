@@ -18,12 +18,12 @@ path = "data/preprocessed_imdb.csv"
 df = pd.read_csv(path)
 
 
-X = np.array(df["lematized_tokens"])
-y = np.array(df["sentiment"])
+X = np.array(df["lematized_tokens"])[:100]
+y = np.array(df["sentiment"])[:100]
 
 
 model = Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1)
-X = model.fit(X)
+X, model = model.fit_transform(X)
 
 pca = PCA(n_components=2)
 result = pca.fit_transform(X)
