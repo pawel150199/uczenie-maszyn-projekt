@@ -1,7 +1,6 @@
 import os
 import numpy as np
 from PIL import Image
-import cv2
 import numpy as np
 import pandas as pd
 import random
@@ -9,6 +8,7 @@ import matplotlib.pyplot as plt
 from model.cnn import get_model
 
 def imageLoader(path: str) -> np.array:
+    """Allow load images and return it as np.array"""
     images = []
     length = len(os.listdir(path))
     df = pd.read_csv("data/preprocessed_imdb.csv")
