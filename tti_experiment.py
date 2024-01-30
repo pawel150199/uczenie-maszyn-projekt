@@ -23,7 +23,7 @@ from tensorflow.keras.callbacks import TensorBoard
 
 from image_dataloader import imageLoader
 from model.word2vec import Word2Vec
-from text_to_Image import TextToImage
+from text_to_image import TextToImage
 from model.cnn import get_model
 from model.neural_network import create_cnn
 

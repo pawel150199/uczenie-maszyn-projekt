@@ -9,8 +9,8 @@ from mpl_toolkits.mplot3d import Axes3D
 
 df = pd.read_csv("data/preprocessed_imdb.csv")
 
-X = np.array(df['lematized_tokens'])[:100]
-y = np.array(df['sentiment'])[:100]
+X = np.array(df['lematized_tokens'])[:3000]
+y = np.array(df['sentiment'])[:3000]
 
 
 max_epochs = 40
