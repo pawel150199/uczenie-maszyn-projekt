@@ -1,6 +1,6 @@
 \begin{tabular}{llrll}
 \hline
- Metric   & TFIDF   &   BoW & HV    & D2V   \\
+TFIDF   &   BoW & HV    & D2V  & W2V   \\
 \hline
  0.778    & 0.632   & 0.744 & 0.769 & 0.821 \\
  2, 3, 4  & ---     & 2     & 2, 3  & all   \\

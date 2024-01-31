@@ -53,7 +53,6 @@ def main(table_name: str):
                     for c in conclusions])
 
     # Show outputs  
-    headers = ['Metric']
     for i in vecs:
         headers.append(i)
 
