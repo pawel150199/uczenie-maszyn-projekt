@@ -14,11 +14,15 @@ from sklearn.neural_network import MLPClassifier
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import multiprocessing
 from model.nn import get_mlp
+from keras.utils import to_categorical
+from model.cnn import get_model
+from text_to_image import TextToImage
 
 from model.mean_embeding_vectorizer import MeanEmbeddingVectorizer
 
 RANDOM_STATE = 1410
 VECTOR_SIZE = 100
+EPOCHS = 40
 CORES = multiprocessing.cpu_count()
 
 
@@ -28,22 +32,14 @@ def main():
 
     df = pd.read_csv("data/preprocessed_imdb.csv")
 
-    mlp = get_mlp()
-
-    clfs = {
-        'KNN' : KNeighborsClassifier(),
-        #'SVC' : SVC(random_state=RANDOM_STATE),
-        #'MLP' : MLPClassifier(random_state=RANDOM_STATE),
-
-    }
-
     vecs = {
         #"TFIDF" : TfidfVectorizer(),
         #"BoW" : CountVectorizer(),
         #"HV" : HashingVectorizer(),
         #"BTFIDF" : TfidfVectorizer(binary=True),
         #"D2V" : Doc2Vec(vector_size=VECTOR_SIZE, min_count=1),
-        "W2V" : Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1),
+        #"W2V" : Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1),
+        "TTI" : TextToImage(vector_size=VECTOR_SIZE)
     }
 
     metrics = {
@@ -53,7 +49,7 @@ def main():
     n_splits = 5
     n_repeats = 2
 
-    scores = np.zeros((len(vecs), n_splits * n_repeats, len(clfs), len(metrics)))
+    scores = np.zeros((len(vecs), n_splits * n_repeats, 1, len(metrics)))
 
 
     rskf = rskf = RepeatedStratifiedKFold(n_splits=n_splits, n_repeats=n_repeats, random_state=RANDOM_STATE)
@@ -61,30 +57,37 @@ def main():
     print("\nExperiment evaluation\n")
 
     for vec_id, vec_name in enumerate(vecs):
-        X = np.array(df["lematized_tokens"])[:1100]
-        y = np.array(df["sentiment"])[:1100]
+        X = np.array(df["lematized_tokens"])[:1700]
+        y = np.array(df["sentiment"])[:1700]
     
         print(vec_name)
         vectorizer = vecs[vec_name]
         X = vectorizer.fit_transform(X)
 
         for fold_id, (train, test) in enumerate(rskf.split(X, y)):
-            for clf_id, clf_name in enumerate(clfs):
-                clf = clfs[clf_name]
-                clf.fit(X[train], y[train])
-                y_pred = clf.predict(X[test])
+            if vec_name == "TTI":
+                clf = get_model(X[train].shape[1], X[train].shape[1])
+                clf.fit(X[train], y[train], epochs=EPOCHS, verbose=0)
+                y_pred = clf.predict(X[test], verbose=0)
                 for metric_id, metric_name in enumerate(metrics): 
                     # VECTORIZER X FOLD X CLASSIFICATOR X METRIC
-                    scores[vec_id, fold_id, clf_id, metric_id] = metrics[metric_name](np.array(y[test]),np.array(y_pred))
+                    scores[vec_id, fold_id, 1, metric_id] = metrics[metric_name](np.array(y[test]),np.array(y_pred))
+            else:
+                clf = get_mlp(X[train].shape[1])
+                clf.fit(X[train], to_categorical(y[train]), epochs=EPOCHS, verbose=0)
+                y_pred = clf.predict(X[test], verbose=0)
+                for metric_id, metric_name in enumerate(metrics): 
+                    # VECTORIZER X FOLD X CLASSIFICATOR X METRIC
+                    scores[vec_id, fold_id, 1, metric_id] = metrics[metric_name](np.array(y[test]),np.array(y_pred))
 
 
     mean = np.mean(scores, axis=1)
     std = np.std(scores, axis=1)
     
     print("\nSave results...\n")
-    #np.save(f"results/main-scores", scores)
-    #np.save(f"results/main-mean", mean)
-    #np.save(f"results/main-std", std)
+    np.save(f"results/nn-scores", scores)
+    np.save(f"results/nn-mean", mean)
+    np.save(f"results/nn-std", std)
     print("\nResults saved\n")
 
     print(scores)

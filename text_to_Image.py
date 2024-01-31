@@ -5,6 +5,7 @@ from gensim.models import Word2Vec
 import matplotlib.pyplot as plt 
 import pandas as pd 
 import numpy as np
+from sklearn.decomposition import PCA
 from model.word2vec import Word2Vec
 from tensorflow.keras.preprocessing.sequence import pad_sequences
 import multiprocessing
@@ -24,7 +25,19 @@ class TextToImage(object):
         vectors = model.fit(X, max_length=self.max_length)
         
         return vectors
+    
+    def fit_transform(self, X, value: int=40):
+        vectors = self._word2vec(X)
+        height = vectors.shape[1]
+        width = vectors.shape[2]
 
+        vectors = vectors.reshape(X.shape[0], height*width)
+        pca = PCA(n_components=value*value)
+        vectors = pca.fit_transform(vectors)
+        vectors = vectors.reshape(vectors.shape[0], value, value)
+
+        return np.array(vectors)
+        
     def transform(self, X):
         vectors = self._word2vec(X)
         for image_id, image in enumerate(vectors):

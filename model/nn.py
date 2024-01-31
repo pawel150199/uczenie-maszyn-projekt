@@ -8,13 +8,9 @@ from tensorflow.keras.callbacks import TensorBoard
 import time
 import os
 
-def get_model(height: int, width: int):
+def get_mlp(dim: int):
     model = tf.keras.Sequential()
-    model.add(Conv2D(64, kernel_size = (10, 3), activation='relu', input_shape=(height, width, 1)))
-    model.add(BatchNormalization())
-    
-    model.add(Flatten())
-    model.add(Dense(16, activation='relu'))
+    model.add(Dense(16, activation='relu', input_shape=(dim)))
     model.add(Dropout(0.1))
 
     model.add(Dense(16, activation='relu'))
