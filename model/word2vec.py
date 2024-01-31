@@ -38,7 +38,6 @@ class Word2Vec(object):
         return X_t, model
     
     def fit(self, X, max_length=None):
-        # The same as fit_transform but not meaning values
         X = [x.split() for x in X]
 
         model = w2v(vector_size=self.vector_size, window=self.window, min_count=self.min_count, workers=self.workers)
@@ -47,24 +46,10 @@ class Word2Vec(object):
         word2vec = {word: model.wv[word] for word in model.wv.index_to_key}
 
         vectors = []
-
         for words in X:
             word_vectors = [word2vec[w] for w in words]
             vector = np.array(word_vectors)
             vectors.append(vector)
-
         vectors = pad_sequences(vectors, padding='post', truncating='post', dtype='float32', maxlen=max_length)
 
-        #vectors = pad_sequences(np.array([
-        #    np.array([word2vec[w] for w in words]
-        #            or [np.zeros(dim)])
-        #    for words in X
-        #]), 
-        #    padding='post',
-        #    dtype='float32',
-        #    maxlen=max_length
-        #)
-
-        print(np.array(vectors).shape)
-        
         return np.array(vectors)

@@ -14,18 +14,12 @@ class Doc2Vec(object):
         X_tagged = [TaggedDocument(words=word_tokenize(doc.lower()),
                               tags=[str(i)]) for i,
                doc in enumerate(X)]
-        # Train the Doc2vec model
         model = d2v(vector_size=self.vector_size,
                         min_count=self.min_count, epochs=self.epochs, window=self.window)
         model.build_vocab(X_tagged)
         model.train(X_tagged,
                     total_examples=model.corpus_count,
-                    epochs=model.epochs)
-        
-        # Get the document vectors
-        #document_vectors = [model.infer_vector(
-        #    word_tokenize(doc.lower())) for doc in X]
-
+                    epochs=model.epochs
         document_vectors = [model.dv[idx] for idx in range(len(X))] 
         
         return np.array(document_vectors)
