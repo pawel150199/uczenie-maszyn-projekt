@@ -13,18 +13,20 @@ def main(table_name: str):
     alpha=0.05 
     m_fmt="%3f" 
     std_fmt=None 
-    nc="---" 
+    nc="---"
     db_fmt="%s"
     tablefmt="plain"
 
        
-    scores = np.load("results/lemma-main-scores.npy")
-    mean_scores = np.load("results/lemma-main-mean.npy")
-    std =np.load("results/lemma-main-std.npy")
+    scores = np.load("results/nn-scores.npy")
+    mean_scores = np.load("results/nn-mean.npy")
+    std =np.load("results/nn-std.npy")
+
+    print(mean_scores)
 
     #scores = scores.
     metrics = ["accuracy"]
-    vecs = ["TFIDF", "BoW", "HV", "D2V", "W2V"]
+    vecs = ["TFIDF", "BoW", "HV", "D2V", "W2V", "TTI"]
     n_clfs = len(vecs)
     t = []
 
@@ -62,4 +64,4 @@ def main(table_name: str):
     print(tabulate(t, headers=vecs, tablefmt='grid'))
 
 if __name__ == "__main__":
-    main("tables/lemma-main")
+    main("tables/nn-main")
