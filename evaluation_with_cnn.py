@@ -33,13 +33,13 @@ def main():
     df = pd.read_csv("data/preprocessed_imdb.csv")
 
     vecs = {
-        #"TFIDF" : TfidfVectorizer(),
-        #"BoW" : CountVectorizer(),
-        #"HV" : HashingVectorizer(),
+        "TFIDF" : TfidfVectorizer(),
+        "BoW" : CountVectorizer(),
+        "HV" : HashingVectorizer(),
         #"BTFIDF" : TfidfVectorizer(binary=True),
         #"D2V" : Doc2Vec(vector_size=VECTOR_SIZE, min_count=1),
         #"W2V" : Word2Vec(vector_size=VECTOR_SIZE, min_count=1, workers=CORES-1),
-        "TTI" : TextToImage(vector_size=VECTOR_SIZE)
+        #"TTI" : TextToImage(vector_size=VECTOR_SIZE)
     }
 
     metrics = {
@@ -67,18 +67,20 @@ def main():
         for fold_id, (train, test) in enumerate(rskf.split(X, y)):
             if vec_name == "TTI":
                 clf = get_model(X[train].shape[1], X[train].shape[1])
-                clf.fit(X[train], y[train], epochs=EPOCHS, verbose=0)
-                y_pred = clf.predict(X[test], verbose=0)
-                for metric_id, metric_name in enumerate(metrics): 
-                    # VECTORIZER X FOLD X CLASSIFICATOR X METRIC
-                    scores[vec_id, fold_id, 1, metric_id] = metrics[metric_name](np.array(y[test]),np.array(y_pred))
-            else:
-                clf = get_mlp(X[train].shape[1])
                 clf.fit(X[train], to_categorical(y[train]), epochs=EPOCHS, verbose=0)
-                y_pred = clf.predict(X[test], verbose=0)
+                y_pred = clf.predict(X[test], verbose=0).round()
+                y_pred = np.argmax(np.array(y_pred), axis=1)
                 for metric_id, metric_name in enumerate(metrics): 
                     # VECTORIZER X FOLD X CLASSIFICATOR X METRIC
-                    scores[vec_id, fold_id, 1, metric_id] = metrics[metric_name](np.array(y[test]),np.array(y_pred))
+                    print(y_pred.shape)
+                    scores[vec_id, fold_id, 0, metric_id] = metrics[metric_name](np.array(y[test]),np.array(y_pred))
+            else:
+                clf = MLPClassifier(hidden_layer_sizes=50)
+                clf.fit(X[train], y[train])
+                y_pred = clf.predict(X[test])
+                for metric_id, metric_name in enumerate(metrics): 
+                    # VECTORIZER X FOLD X CLASSIFICATOR X METRIC
+                    scores[vec_id, fold_id, 0, metric_id] = metrics[metric_name](np.array(y[test]),np.array(y_pred))
 
 
     mean = np.mean(scores, axis=1)

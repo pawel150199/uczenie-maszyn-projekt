@@ -10,7 +10,7 @@ import os
 
 def get_model(height: int, width: int):
     model = tf.keras.Sequential()
-    model.add(Conv2D(64, kernel_size = (10, 3), activation='relu', input_shape=(height, width, 1)))
+    model.add(Conv2D(64, kernel_size = (5, 5), activation='relu', input_shape=(height, width, 1)))
     model.add(BatchNormalization())
     
     model.add(Flatten())
@@ -23,7 +23,7 @@ def get_model(height: int, width: int):
     model.add(Dense(16, activation='relu'))
     model.add(Dropout(0.2))
 
-    model.add(Dense(2, activation = 'softmax'))
+    model.add(Dense(2, activation = 'sigmoid'))
 
     model.compile(loss='binary_crossentropy', optimizer='adam', metrics = ['accuracy'])
     return model
