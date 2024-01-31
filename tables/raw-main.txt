@@ -1,0 +1,8 @@
+\begin{tabular}{llrlll}
+\hline
+ Metric   & TFIDF   &   BoW & HV    & TFIDF-B    & D2V   \\
+\hline
+ 0.770    & 0.635   & 0.647 & 0.831 & 0.775      & 0.768 \\
+ 2, 3     & ---     & 2     & all   & 1, 2, 3, 6 & 2, 3  \\
+\hline
+\end{tabular}
